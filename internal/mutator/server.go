@@ -2,15 +2,16 @@ package mutator
 
 import (
 	"context"
-	"github.com/gorilla/mux"
-	"github.com/project-alvarium/ones-demo-2021/internal/config"
-	"github.com/project-alvarium/ones-demo-2021/internal/db"
-	"github.com/project-alvarium/provider-logging/pkg/interfaces"
-	"github.com/project-alvarium/provider-logging/pkg/logging"
+	"log/slog"
 	"net/http"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/gorilla/mux"
+	"github.com/project-alvarium/alvarium-sdk-go/pkg/interfaces"
+	"github.com/project-alvarium/ones-demo-2021/internal/config"
+	"github.com/project-alvarium/ones-demo-2021/internal/db"
 )
 
 // HttpServer contains references to dependencies required by the http server implementation.
@@ -52,7 +53,7 @@ func (b *HttpServer) BootstrapHandler(
 		ReadTimeout:  timeout,
 	}
 
-	b.logger.Write(logging.InfoLevel, "Web server starting ("+addr+")")
+	b.logger.Write(slog.LevelInfo, "Web server starting ("+addr+")")
 
 	wg.Add(1)
 	go func() {
@@ -71,12 +72,12 @@ func (b *HttpServer) BootstrapHandler(
 
 		<-ctx.Done()
 		//DEBUG
-		b.logger.Write(logging.InfoLevel, "Web server shutting down")
+		b.logger.Write(slog.LevelInfo, "Web server shutting down")
 		_ = server.Shutdown(ctx)
 		b.dbMongo.Close(ctx)
 		close(b.chPublish)
 		//DEBUG
-		b.logger.Write(logging.InfoLevel, "Web server shut down")
+		b.logger.Write(slog.LevelInfo, "Web server shut down")
 	}()
 
 	return true

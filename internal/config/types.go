@@ -17,8 +17,8 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+
 	SdkConfig "github.com/project-alvarium/alvarium-sdk-go/pkg/config"
-	logging "github.com/project-alvarium/provider-logging/pkg/config"
 )
 
 const (
@@ -53,11 +53,11 @@ func (s ServiceInfo) Uri() string {
 }
 
 type ApplicationConfig struct {
-	Endpoint EndpointInfo        `json:"endpoint,omitempty"`
-	Mongo    MongoConfig         `json:"mongo,omitempty"`
-	NextHop  ServiceInfo         `json:"nextHop,omitempty"`
-	Sdk      SdkConfig.SdkInfo   `json:"sdk,omitempty"`
-	Logging  logging.LoggingInfo `json:"logging,omitempty"`
+	Endpoint EndpointInfo          `json:"endpoint,omitempty"`
+	Mongo    MongoConfig           `json:"mongo,omitempty"`
+	NextHop  ServiceInfo           `json:"nextHop,omitempty"`
+	Sdk      SdkConfig.SdkInfo     `json:"sdk,omitempty"`
+	Logging  SdkConfig.LoggingInfo `json:"logging,omitempty"`
 }
 
 func (a ApplicationConfig) AsString() string {

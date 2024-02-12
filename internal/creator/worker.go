@@ -19,27 +19,27 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"log/slog"
+	"net/http"
+	"sync"
+	"time"
+
 	SdkConfig "github.com/project-alvarium/alvarium-sdk-go/pkg/config"
 	"github.com/project-alvarium/alvarium-sdk-go/pkg/interfaces"
 	"github.com/project-alvarium/ones-demo-2021/internal/config"
 	"github.com/project-alvarium/ones-demo-2021/internal/db"
 	"github.com/project-alvarium/ones-demo-2021/internal/models"
-	logInterface "github.com/project-alvarium/provider-logging/pkg/interfaces"
-	"github.com/project-alvarium/provider-logging/pkg/logging"
-	"net/http"
-	"sync"
-	"time"
 )
 
 type CreateWorker struct {
 	cfg    SdkConfig.SdkInfo
 	db     *db.MongoProvider
-	logger logInterface.Logger
+	logger interfaces.Logger
 	sdk    interfaces.Sdk
 	svc    config.ServiceInfo
 }
 
-func NewCreateWorker(sdk interfaces.Sdk, cfg SdkConfig.SdkInfo, mutate config.ServiceInfo, db *db.MongoProvider, logger logInterface.Logger) CreateWorker {
+func NewCreateWorker(sdk interfaces.Sdk, cfg SdkConfig.SdkInfo, mutate config.ServiceInfo, db *db.MongoProvider, logger interfaces.Logger) CreateWorker {
 	return CreateWorker{
 		cfg:    cfg,
 		db:     db,
@@ -75,7 +75,7 @@ func (c *CreateWorker) BootstrapHandler(ctx context.Context, wg *sync.WaitGroup)
 			//Send data to the next service
 			tr := &http.Transport{
 				DisableKeepAlives: true,
-				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+				TLSClientConfig:   &tls.Config{InsecureSkipVerify: true},
 			}
 			client := &http.Client{Transport: tr}
 			resp, err := client.Post(c.svc.Uri()+"/data", config.HeaderValueJson, bytes.NewBuffer(b))
@@ -88,7 +88,7 @@ func (c *CreateWorker) BootstrapHandler(ctx context.Context, wg *sync.WaitGroup)
 			time.Sleep(1 * time.Second)
 			//cancelled = true /* Uncomment if you just want to run through a single pass */
 		}
-		c.logger.Write(logging.DebugLevel, "cancel received")
+		c.logger.Write(slog.LevelDebug, "cancel received")
 	}()
 
 	wg.Add(1)
@@ -96,7 +96,7 @@ func (c *CreateWorker) BootstrapHandler(ctx context.Context, wg *sync.WaitGroup)
 		defer wg.Done()
 
 		<-ctx.Done()
-		c.logger.Write(logging.InfoLevel, "shutdown received")
+		c.logger.Write(slog.LevelInfo, "shutdown received")
 		cancelled = true
 	}()
 	return true

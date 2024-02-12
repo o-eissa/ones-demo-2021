@@ -3,18 +3,18 @@ package main
 import (
 	"context"
 	"flag"
+	"log/slog"
+	"os"
+
 	"github.com/gorilla/mux"
 	"github.com/project-alvarium/alvarium-sdk-go/pkg"
+	sdkConfig "github.com/project-alvarium/alvarium-sdk-go/pkg/config"
 	"github.com/project-alvarium/alvarium-sdk-go/pkg/factories"
 	"github.com/project-alvarium/alvarium-sdk-go/pkg/interfaces"
 	"github.com/project-alvarium/ones-demo-2021/internal/bootstrap"
 	"github.com/project-alvarium/ones-demo-2021/internal/config"
 	"github.com/project-alvarium/ones-demo-2021/internal/db"
 	"github.com/project-alvarium/ones-demo-2021/internal/mutator"
-	logConfig "github.com/project-alvarium/provider-logging/pkg/config"
-	logFactory "github.com/project-alvarium/provider-logging/pkg/factories"
-	"github.com/project-alvarium/provider-logging/pkg/logging"
-	"os"
 )
 
 func main() {
@@ -29,7 +29,7 @@ func main() {
 	fileFormat := config.GetFileExtension(configPath)
 	reader, err := config.NewReader(fileFormat)
 	if err != nil {
-		tmpLog := logFactory.NewLogger(logConfig.LoggingInfo{MinLogLevel: logging.ErrorLevel})
+		tmpLog := factories.NewLogger(sdkConfig.LoggingInfo{MinLogLevel: slog.LevelError})
 		tmpLog.Error(err.Error())
 		os.Exit(1)
 	}
@@ -37,14 +37,14 @@ func main() {
 	cfg := config.ApplicationConfig{}
 	err = reader.Read(configPath, &cfg)
 	if err != nil {
-		tmpLog := logFactory.NewLogger(logConfig.LoggingInfo{MinLogLevel: logging.ErrorLevel})
+		tmpLog := factories.NewLogger(sdkConfig.LoggingInfo{MinLogLevel: slog.LevelError})
 		tmpLog.Error(err.Error())
 		os.Exit(1)
 	}
 
-	logger := logFactory.NewLogger(cfg.Logging)
-	logger.Write(logging.DebugLevel, "config loaded successfully")
-	logger.Write(logging.DebugLevel, cfg.AsString())
+	logger := factories.NewLogger(cfg.Logging)
+	logger.Write(slog.LevelDebug, "config loaded successfully")
+	logger.Write(slog.LevelDebug, cfg.AsString())
 
 	// List of annotators driven from config, eventually support dist. policy.
 	var annotators []interfaces.Annotator
