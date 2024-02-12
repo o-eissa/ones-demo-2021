@@ -1,6 +1,6 @@
 {
   "mongo": {
-    "host": "172.19.0.2",
+    "host": "AlvariumDB",
     "port": 27017,
     "username": "dbAdmin",
     "password": "password",
