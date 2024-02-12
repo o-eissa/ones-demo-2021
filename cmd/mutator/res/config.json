@@ -1,6 +1,6 @@
 {
   "mongo": {
-    "host": "AlvariumDB",
+    "host": "dcf-mongodb",
     "port": 27017,
     "username": "dbAdmin",
     "password": "password",

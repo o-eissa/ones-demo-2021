@@ -5,7 +5,7 @@ pipeline {
     }
     environment {
         GO121MODULE = 'on'
-        IMAGE_TAG = "value$BUILD_NUMBER"
+        IMAGE_TAG = "$GIT_COMMIT"
     }
     stages {
         stage('Build') {

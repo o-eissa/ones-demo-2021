@@ -7,7 +7,7 @@ toolchain go1.21.4
 require (
 	github.com/gorilla/mux v1.8.0
 	github.com/oklog/ulid/v2 v2.0.2
-	github.com/project-alvarium/alvarium-sdk-go v0.0.0-20211029200807-884bf5e97c4d
+	github.com/project-alvarium/alvarium-sdk-go v0.0.0-20240219203054-bdd8cb3efd78
 	go.mongodb.org/mongo-driver v1.7.2
 )
 
@@ -29,4 +29,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/project-alvarium/alvarium-sdk-go => github.com/o-eissa/alvarium-sdk-go v0.0.0-20240211090415-9611c1055653
+replace github.com/project-alvarium/alvarium-sdk-go => github.com/o-eissa/alvarium-sdk-go v0.0.0-20240219143657-29c9b7e6cf79
